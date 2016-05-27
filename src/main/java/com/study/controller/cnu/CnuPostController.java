@@ -7,6 +7,7 @@ import com.study.repository.jdbc.CnuJdbcRepository;
 import com.study.repository.mybatis.CnuRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.study.service.cnu.CnuService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -37,9 +38,12 @@ public class CnuPostController {
     @Autowired
     private CnuJdbcRepository cnuJdbcRepository;
     
+    @Autowired
+    private CnuService cnuService;
+
     @RequestMapping("")
     public String index(Model model) {
-        List<CnuPost> cnuPostList = cnuRepository.selectCnuPostList();
+        List<CnuPost> cnuPostList = cnuService.getCnuPostList();
         model.addAttribute("cnuPostList", cnuPostList);
         return "post/index";
     }
