@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -29,6 +30,9 @@ public class CnuPostController {
     @Autowired
     CnuRepository cnuRepository;
 
+    @Autowired
+    private CnuJdbcRepository cnuJdbcRepository;
+    
     @RequestMapping("")
     public String index(Model model) {
         List<CnuPost> cnuPostList = cnuRepository.selectCnuPostList();
@@ -65,13 +69,16 @@ public class CnuPostController {
     	{
     		return "redirect:/post";
     	}
-        cnuPost.increaseViewCount();
+    	
+    	cnuPost.setContent(cnuPost.getContent().replaceAll("\n\r", "<BR>"));
+        
+    	cnuPost.increaseViewCount();
 		model.addAttribute("cnuPost", cnuPost); 
 
         List<CnuComment> cnuCommentList = cnuRepository.selectCnuCommentList(postId);
         model.addAttribute("cnuCommentList", cnuCommentList);
 
-        cnuRepository.increaseViewCount(cnuPost);
+        cnuJdbcRepository.increaseViewCount(cnuPost);
 
         return "post/view";
     }
@@ -124,4 +131,12 @@ public class CnuPostController {
     	return "redirect:/post/view?postId=" + postId;
     }
 
+    @ExceptionHandler(RuntimeException.class)
+    public String handler(RuntimeException e) {
+    	System.out.println("================");
+    	System.out.println("================");
+    	System.out.println("================");
+    	
+    	return "redirect:/post";
+    }
 }

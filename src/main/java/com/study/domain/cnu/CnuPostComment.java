@@ -10,7 +10,7 @@ public class CnuPostComment {
 	private String comment;
 	private Date createTime;
 	private boolean isDel;
-
+	
 	public int getCommentId() {
 		return commentId;
 	}
