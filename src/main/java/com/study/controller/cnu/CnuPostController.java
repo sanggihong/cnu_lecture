@@ -5,6 +5,8 @@ import com.study.domain.cnu.CnuPost;
 import com.study.domain.cnu.CnuPostComment;
 import com.study.repository.jdbc.CnuJdbcRepository;
 import com.study.repository.mybatis.CnuRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,6 +27,8 @@ import java.util.List;
 @Controller
 @RequestMapping("/post")
 public class CnuPostController {
+    Logger logger = LoggerFactory.getLogger(this.getClass());
+
     @Value("${application.security.salt}") private String securityKey;
 
     @Autowired
@@ -131,12 +135,10 @@ public class CnuPostController {
     	return "redirect:/post/view?postId=" + postId;
     }
 
-    @ExceptionHandler(RuntimeException.class)
-    public String handler(RuntimeException e) {
-    	System.out.println("================");
-    	System.out.println("================");
-    	System.out.println("================");
-    	
-    	return "redirect:/post";
+    @ExceptionHandler(value = RuntimeException.class)
+    public String exception(RuntimeException e) {
+        logger.error("Exception Handler IN Contrller : {}", e.toString());
+
+        return "post/index";
     }
 }
